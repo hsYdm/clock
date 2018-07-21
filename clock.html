@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>时钟动画</title>
+	<style type="text/css">
+		.box{
+			width: 200px;
+			height: 200px;
+			border: 3px solid black;
+			border-radius: 50%;
+			position: relative;
+			margin: 50px auto;
+		}
+		ul{
+			display: inline-block;
+			position: absolute;
+			top: 0;
+			left: 50%;
+			margin: 0 0 0 -3px;
+			padding: 0;
+		}
+		ul>li{
+			transform-origin: 50% 100px;
+			position: absolute;
+			top: 0;
+			left: 0;
+			list-style: none;
+			display: inline-block;
+			width: 6px;
+			height: 15px;
+			background-color: black;
+			transition: transform 500ms linear;
+		}
+		ul>li>span{
+			position: absolute;
+		    top: 15px;
+		    left: -6px;
+		    width: 18px;
+		    opacity: 0;
+		    transition: opacity 1000ms linear;
+		}
+		.circle{
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background-color: black;
+			opacity: 0;
+			transition: opacity 500ms linear;
+		}
+		.sz{
+			height: 40px;
+		}
+		.fz{
+			height: 60px;
+		}
+		.mz{
+			height: 80px;
+		}
+		.sz, .fz, .mz {
+			opacity: 0;
+			width: 6px;
+		    background-color: black;
+		    position: absolute;
+		    left: 50%;
+		    top: 50%;
+		    margin-left: -3px;
+		    border-bottom-left-radius: 100%;
+		    border-bottom-right-radius: 100%;
+		    transform-origin: top;
+		    transition: opacity 500ms linear;
+		}
+	</style>
+</head>
+<body>
+	<div class="box">
+		<ul>
+			<li><span>00</span></li>
+			<li><span>01</span></li>
+			<li><span>02</span></li>
+			<li><span>03</span></li>
+			<li><span>04</span></li>
+			<li><span>05</span></li>
+			<li><span>06</span></li>
+			<li><span>07</span></li>
+			<li><span>08</span></li>
+			<li><span>09</span></li>
+			<li><span>10</span></li>
+			<li><span>11</span></li>
+		</ul>
+		<div class="circle"></div>
+		<div class="sz"></div>
+		<div class="fz"></div>
+		<div class="mz"></div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+	var clock = {
+		oLi: document.getElementsByTagName("li"),
+		oh: document.getElementsByClassName("sz")[0],
+		om: document.getElementsByClassName("fz")[0],
+		os: document.getElementsByClassName("mz")[0],
+		oCir: document.getElementsByClassName("circle")[0],
+		len: document.getElementsByTagName("li").length,
+		rt: 30,
+		index: 1,
+		firsTime: 50,
+		time: 400,
+		hdeg: 0,
+		mdeg: 0,
+		sdeg: 0,
+		init: function() {
+			if(this.index == 1) {
+				var delay = this.firsTime;
+			}else {
+				var delay = this.firsTime + this.time;
+			}
+			var _this = this;
+			var timer = setTimeout(function() {
+				for(var i = _this.index; i < _this.len; i++) {
+					_this.oLi[i].style.transform = "rotate3d(0, 0, 1, "+ _this.rt +"deg)";
+					_this.oLi[i].getElementsByTagName("span")[0].style.transform = "rotate3d(0, 0, 1, -"+ _this.rt +"deg)";
+				}
+				if(_this.index == 11) {
+					clearTimeout(timer);
+					for(var j = 0; j < _this.len; j++) {
+						_this.oLi[j].getElementsByTagName("span")[0].style.opacity = "1";
+					}
+					_this.getTime();
+					_this.showTime();
+					return false;
+				}
+				_this.index++;
+				_this.rt += 30;
+				clearTimeout(timer);
+				_this.init();
+			}, delay)
+		},
+		getTime: function() {
+			var now = new Date();
+			var h = now.getHours();
+			var m = now.getMinutes();
+			var s = now.getSeconds();
+			this.hdeg = 30 * h - 180;
+			this.mdeg = 6 * m - 180;
+			this.sdeg = 6 * s - 180;
+			this.oh.style.transform = "rotate3d(0, 0, 1, "+ this.hdeg +"deg)";
+			this.om.style.transform = "rotate3d(0, 0, 1, "+ this.mdeg +"deg)";
+			this.os.style.transform = "rotate3d(0, 0, 1, "+ this.sdeg +"deg)";
+			var _this = this;
+			var timer = setTimeout(function() {
+				clearTimeout(timer);
+				_this.getTime();
+			}, 100)
+		},
+		showTime: function() {
+			this.oCir.style.opacity = "1";
+			this.oh.style.opacity = "1";
+			this.om.style.opacity = "1";
+			this.os.style.opacity = "1";
+		},
+	}
+	clock.init();
+</script>
