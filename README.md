@@ -1,2 +1,2 @@
 # clock
-clock amate
+clock animate
